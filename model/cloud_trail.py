@@ -19,14 +19,15 @@ class Event:
         self.arn = _detail['userIdentity']['arn']
         self.principal = _detail['userIdentity']['principalId']
         _userType = _detail['userIdentity']['type']
-        self.responseElements = -_detail['responseElements']
-        self.errorCode = _detail['errorCode']
-        self.errorMessage = _detail['errorMessage']
+        self.responseElements = _detail['responseElements']
+        if 'errorCode' in _detail.keys():
+            self.errorCode = _detail['errorCode']
+            self.errorMessage = _detail['errorMessage']
         if _userType == 'IAMUser':
             self.user = _detail['userIdentity']['userName']
         else:
             self.user = self.principal.split(':')[1]
-        self.appName = _detail['test']
+        self.appName = None
         self.runInstance = False
         self.createValumes = False
         self.createImage = False
@@ -56,6 +57,12 @@ class Event:
         items = self.instanceIds
         for item in items:
             self.ids.append(item['instanceId'])
+            if "tagSet" in item.keys():
+                for tag in item['tagSet']['items']:
+                    if tag['key'] == "Name":
+                        self.appName = tag['value']
+                    
+                
         logger.info(self.ids)
         logger.info('number of instances: ' + str(len(self.ids)))
 

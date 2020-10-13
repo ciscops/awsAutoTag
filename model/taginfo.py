@@ -6,7 +6,7 @@ class InstanceTag:
 		self.DataClassification = "Cisco Public"
 		self.Environment = 'NonProd'
 		self.ResourceOwner = user
-		self.CiscMailAlias = f'{user}@cisco.com'
+		self.CiscMailAlias = user
 		self.DataTaxonomy = 'Cisco '
 		self.AppName = AppName
 
