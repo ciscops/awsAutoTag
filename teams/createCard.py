@@ -5,6 +5,7 @@ from pyadaptivecards.actions import Submit
 from pyadaptivecards.options import FontSize,HorizontalAlignment,Colors,VerticalContentAlignment
 from pyadaptivecards.container import FactSet,ColumnSet
 
+CONTENT_TYPE = "application/vnd.microsoft.card.adaptive"
 
 
 
@@ -30,14 +31,14 @@ def createTwoColCard(device,greetingtext,fields,time):
     table = ColumnSet(columns=[column1,column2])
     card = AdaptiveCard(body=[greeting, table])
     attachment = {
-        "contentType": "application/vnd.microsoft.card.adaptive",
+        "contentType": CONTENT_TYPE,
         "content":     card.to_dict(),
     }
     print(card.to_json(pretty=True))
     return attachment
 
 
-def create_new_instanceCard(tags,instanceid):
+def create_new_instance_card(tags,instanceid):
 
     greeting = TextBlock(
         f"New EC2 Instance ID: {str(instanceid)}  Has Been Created Please Validate Your Tags",
@@ -60,7 +61,7 @@ def create_new_instanceCard(tags,instanceid):
     submit = Submit(title="Submit")
     card = AdaptiveCard(body=[greeting,table],actions=[submit])
     attachment = {
-        "contentType": "application/vnd.microsoft.card.adaptive",
+        "contentType": CONTENT_TYPE,
         "content":card.to_dict(),
     }
     return attachment
@@ -79,11 +80,11 @@ def static_new_instance(tags,instanceid):
     _cisco_mail_alias = Fact(title="Cisco Mail Alias",value=str(tags.ciscomailalias))
     _data_taxonomy = Fact(title="Data Taxonomy",value=str(tags.data_taxonomy))
     _app_name = Fact(title="Application Name",value=str(tags.AppName))
-    info = FactSet(facts=[_data_classification,_environment,_resourc_oewner,_app_name,_data_taxonomy,_app_name])
+    info = FactSet(facts=[_data_classification,_environment,_resourc_oewner,_cisco_mail_alias,_data_taxonomy,_app_name])
     approve = Submit(title="Approve", data={"instid": instanceid})
     card = AdaptiveCard(body=[greeting,info],actions=[approve])
     attachment = {
-        "contentType": "application/vnd.microsoft.card.adaptive",
+        "contentType": CONTENT_TYPE,
         "content":card.to_dict(),
     }
     return attachment

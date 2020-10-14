@@ -10,9 +10,6 @@ logger.setLevel(logging.INFO)
 def replay(msg,email):
  
     try:
-        #apilogging.debug(
-        #    f"Email Address: {email}\n"
-        #    f"Message: {msg}")
         teams_api.messages.create(toPersonEmail=email,
                                   text=msg)
         return True
@@ -21,7 +18,6 @@ def replay(msg,email):
         return False
 
 def send_all(msg):
-    #apilogging.debug(msg)
     try:
         for email in json.loads(environ['TEAMS_USERS']):
             teams_api.messages.create(toPersonEmail=email,text=msg)

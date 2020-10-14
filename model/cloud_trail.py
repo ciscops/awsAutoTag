@@ -18,7 +18,7 @@ class Event:
         self.eventname = _detail['eventName']
         self.arn = _detail['userIdentity']['arn']
         self.principal = _detail['userIdentity']['principalId']
-        self.responseElements = _detail['responseElements']
+        self.response_elements = _detail['responseElements']
         if 'errorCode' in _detail.keys():
             self.errorcode = _detail['errorCode']
             self.errormessage = _detail['errorMessage']

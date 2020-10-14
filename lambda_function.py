@@ -15,7 +15,7 @@ def lambda_handler(request, context):
 		logger.info('region: ' + str(event.region))
 		logger.info('eventName: ' + str(event.eventname))
 		
-		if not event.responseElements:
+		if not event.response_elements:
 			logger.warning('Not responseElements found')
 			if event.errorcode:
 				logger.error(f'errorCode: {str(event.errorcode)}')
