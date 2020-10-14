@@ -8,8 +8,7 @@ from pyadaptivecards.container import FactSet,ColumnSet
 CONTENT_TYPE = "application/vnd.microsoft.card.adaptive"
 
 
-
-def createTwoColCard(device,greetingtext,fields,time):
+def create_two_col_card(device,greetingtext,fields,time):
     greeting = TextBlock(greetingtext, size=FontSize.LARGE,
         horizontalAlignment=HorizontalAlignment.CENTER, color=Colors.ACCENT)
     col1=[]
