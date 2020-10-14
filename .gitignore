@@ -148,7 +148,7 @@ dmypy.json
 cython_debug/
 
 /.aws/
-!/test.json
+
 .idea/.gitignore
 .idea/aws.xml
 .idea/awstagging.iml
