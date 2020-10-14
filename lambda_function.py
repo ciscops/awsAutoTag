@@ -1,24 +1,14 @@
 from __future__ import print_function
-import json
-import boto3
 import logging
-import time
-import datetime
-import teams.utils_teams
 from model.cloud_trail import Event
 from model.taginfo import InstanceTag
-from teams.send_message import replayCard
-from teams.createCard import staticNewInstance
+from teams.send_message import replay_card
+from teams.createCard import static_new_instance
 from tagging import tag
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(request, context):
-	# logger.info('Event: ' + str(event))
-	# print('Received event: ' + json.dumps(event, indent=2))
-	
-	ids = []
-	
 	try:
 		event = Event(request)
 		logger.info('principalId: ' + str(event.principal))
@@ -33,18 +23,18 @@ def lambda_handler(request, context):
 				logger.error(f'errorMessage: {str(event.errorMessage)}')
 			return False
 		
-		if event.runInstance:
-			event.getInstsanceIds()
+		if event.runinstance:
+			event.get_instsance_ids()
 			
 		if event.ids:
 			inst = InstanceTag(user=event.user, AppName=event.appName)
-			tags = inst.getTags()
+			tags = inst.get_tags()
 			for resourceid in event.ids:
 				i = resourceid.split('-')
 				if i[0] == "i":
 					print('Tagging resource ' + resourceid)
-					attachment = staticNewInstance(tags=inst,instanceid=resourceid)
-					replayCard(attachment=attachment,email=event.user,msg='Card Error')
+					attachment = static_new_instance(tags=inst,instanceid=resourceid)
+					replay_card(attachment=attachment,email=event.user,msg='Card Error')
 					tag(resourceId=resourceid,region=event.region,tag=tags)
 		
 		logger.info(' Remaining time (ms): ' + str(

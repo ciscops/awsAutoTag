@@ -28,33 +28,33 @@ class Event:
         else:
             self.user = self.principal.split(':')[1]
         self.appName = None
-        self.runInstance = False
-        self.createValumes = False
-        self.createImage = False
+        self.runinstance = False
+        self.createvalumes = False
+        self.createimage = False
         self.createSnapshot = False
         
         if self.eventname == 'RunInstances':
-            self.runInstance = True
-            self.instanceIds = _detail['responseElements']['instancesSet']['items']
+            self.runinstance = True
+            self.instanceids = _detail['responseElements']['instancesSet']['items']
         elif self.eventname == 'CreateVolume':
             self.createVolumes = True
-            self.volumeIds = _detail['responseElements']['volumeId']
+            self.volumeids = _detail['responseElements']['volumeId']
         elif self.eventname == "CreateImage":
-            self.createImage = True
-            self.imageIds = _detail['responseElements']['imageId']
+            self.createimage = True
+            self.imagiids = _detail['responseElements']['imageId']
         elif self.eventname == "CreateSnapshot":
-            self.createSnapshot = True
-            self.snapShotIds = _detail['responseElements']['snapshotId']
+            self.createsnapshot = True
+            self.snapshotids = _detail['responseElements']['snapshotId']
         self.ids = []
         
-    def getVolumeIds(self):
+    def get_volume_ids(self):
         if self.createVolumes:
-           self.ids.append(self.volumeIds)
+           self.ids.append(self.volumeids)
            logger.info(self.ids)
     
-    def getInstsanceIds(self):
+    def get_instsance_ids(self):
         ec2 = boto3.resource('ec2', region_name=self.region)
-        items = self.instanceIds
+        items = self.instanceids
         for item in items:
             self.ids.append(item['instanceId'])
             if "tagSet" in item.keys():
@@ -74,12 +74,12 @@ class Event:
             for eni in instance.network_interfaces:
                 self.ids.append(eni.id)
     
-    def getImageIds(self):
-        self.ids.append(self.instanceIds)
+    def get_image_ids(self):
+        self.ids.append(self.instanceids)
         logger.info(self.ids)
         
-    def getSnapShotIds(self):
-        self.ids.append(self.snapShotIds)
+    def get_snap_shot_ids(self):
+        self.ids.append(self.snapshotids)
         logger.info(self.ids)
     
     
