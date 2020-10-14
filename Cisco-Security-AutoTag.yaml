@@ -1,0 +1,163 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: ''
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Label:
+          default: Prerequisites
+        Parameters:
+          - IsCloudTrailEnabled
+          - TEAMSBOTURL
+          - TEAMSBOTTOKEN
+          - TEAMSBOTEMAIL
+          - TEAMSBOTAPPNAME
+    ParameterLabels:
+      IsCloudTrailEnabled:
+        default: >-
+          Is CloudTrail already enabled in this region? CloudTrail is a
+          requirement for Cloudwatch Events. If not enabled, please enable
+          CloudTrail before proceeding.
+        TEAMSBOTURL:
+          default: Teams Bot WebHook URL
+        TEAMSBOTTOKEN:
+          default: Teams Bot Access Token
+        TEAMSBOTEMAIL:
+          default: Teams Bot Email Address
+        TEAMSBOTAPPNAME:
+          default: Teams Bot Application Name
+
+Parameters:
+  IsCloudTrailEnabled:
+    Description: Specify if CloudTrail is enabled in the current region
+    Type: String
+    Default: 'Yes'
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+  TEAMSBOTURL:
+    Description: Webext Teams Bot WebHook URL
+    Type: String
+    Default: <Https://ngrok.io>
+  TEAMSBOTTOKEN:
+    Description: Webext Teams Bot Access Token
+    Type: String
+    Default: <your bots toekn>
+  TEAMSBOTEMAIL:
+    Description: Webext Teams Bot Email Address
+    Type: String
+    Default: <your bots email>
+  TEAMSBOTAPPNAME:
+    Description: Webext Teams Bot Application Name
+    Type: String
+    Default: <your bots name>
+
+
+
+Conditions:
+  CreateResources: !Equals 
+    - !Ref IsCloudTrailEnabled
+    - 'Yes'
+Resources:
+  EC2NewInstance:
+    Type: 'AWS::Events::Rule'
+    Condition: CreateResources
+    Properties:
+      Description: >-
+        Trigger a Lambda function anytime a new EC2 resource is created (EC2
+        instance)
+      EventPattern:
+        detail-type:
+          - AWS API Call via CloudTrail
+        detail:
+          eventSource:
+            - ec2.amazonaws.com
+          eventName:
+            - RunInstances
+      Name: New-EC2-Instance
+      State: ENABLED
+      Targets:
+        - Arn: !Ref ProductionAlias
+          Id: Production
+
+  AutoTag:
+    Type: 'AWS::Lambda::Function'
+    Condition: CreateResources
+    Properties:
+      Code:
+        S3Bucket: taggingbuild
+        S3Key: Auto_Tag_EC2.zip
+      Description: This Function Auto Tags Resources Based on Cisco Security Requriements.
+      Handler: lambda_function.lambda_handler
+      Role: !GetAtt 
+        - LambdaAutoTagRole
+        - Arn
+      Runtime: python3.7
+      Timeout: '60'
+      Environment:
+        Variables:
+          TEAMS_BOT_TOKEN: !Ref TEAMSBOTTOKEN
+          TEAMS_BOT_EMAIL: !Ref TEAMSBOTEMAIL
+          TEAMS_BOT_APP_NAME: !Ref TEAMSBOTAPPNAME
+          TEAMS_BOT_URL: !Ref TEAMSBOTURL
+
+  StableVersion:
+    Type: 'AWS::Lambda::Version'
+    Condition: CreateResources
+    Properties:
+      FunctionName: !Ref AutoTag
+      Description: Stable version
+
+  ProductionAlias:
+    Type: 'AWS::Lambda::Alias'
+    Condition: CreateResources
+    Properties:
+      FunctionName: !Ref AutoTag
+      FunctionVersion: !GetAtt 
+        - StableVersion
+        - Version
+      Name: PROD
+
+  PermissionForEventsToInvokeLambda:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref ProductionAlias
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt 
+        - EC2NewInstance
+        - Arn
+
+  LambdaAutoTagRole:
+    Type: 'AWS::IAM::Role'
+    Condition: CreateResources
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Policies:
+        - PolicyName: LambdaGetLatestWindowsAmiIdPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: Stmt1458923097000
+                Effect: Allow
+                Action:
+                  - 'cloudtrail:LookupEvents'
+                Resource:
+                  - '*'
+              - Sid: Stmt1458923121000
+                Effect: Allow
+                Action:
+                  - 'ec2:CreateTags'
+                  - 'ec2:Describe*'
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  - '*'

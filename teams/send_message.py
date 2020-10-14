@@ -3,7 +3,9 @@ import json
 from webexteamssdk import webexteamssdkException
 from .utils_teams import teams_api
 from os import environ
-
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def replay(msg,email):
     #apilogging.debug(msg)
@@ -48,5 +50,5 @@ def replayCard(attachment,email,msg):
         teams_api.messages.create(toPersonEmail=email,text=msg, attachments=[attachment])
         return True
     except webexteamssdkException as e:
-        #apilogging.debug(f"Message Failed for going to teams: {str(e)}")
+        logger.info(f"Message Failed for going to teams: {str(e)}")
         return False
