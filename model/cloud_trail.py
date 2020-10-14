@@ -18,26 +18,25 @@ class Event:
         self.eventname = _detail['eventName']
         self.arn = _detail['userIdentity']['arn']
         self.principal = _detail['userIdentity']['principalId']
-        _userType = _detail['userIdentity']['type']
         self.responseElements = _detail['responseElements']
         if 'errorCode' in _detail.keys():
-            self.errorCode = _detail['errorCode']
-            self.errorMessage = _detail['errorMessage']
-        if _userType == 'IAMUser':
+            self.errorcode = _detail['errorCode']
+            self.errormessage = _detail['errorMessage']
+        if _detail['userIdentity']['type'] == 'IAMUser':
             self.user = _detail['userIdentity']['userName']
         else:
             self.user = self.principal.split(':')[1]
-        self.appName = None
+        self.appname = None
         self.runinstance = False
-        self.createvalumes = False
+        self.createvolumes = False
         self.createimage = False
-        self.createSnapshot = False
+        self.createsnapshot = False
         
         if self.eventname == 'RunInstances':
             self.runinstance = True
             self.instanceids = _detail['responseElements']['instancesSet']['items']
         elif self.eventname == 'CreateVolume':
-            self.createVolumes = True
+            self.createvolumes = True
             self.volumeids = _detail['responseElements']['volumeId']
         elif self.eventname == "CreateImage":
             self.createimage = True
@@ -48,7 +47,7 @@ class Event:
         self.ids = []
         
     def get_volume_ids(self):
-        if self.createVolumes:
+        if self.createvolumes:
            self.ids.append(self.volumeids)
            logger.info(self.ids)
     
@@ -60,7 +59,7 @@ class Event:
             if "tagSet" in item.keys():
                 for tag in item['tagSet']['items']:
                     if tag['key'] == "Name":
-                        self.appName = tag['value']
+                        self.appname = tag['value']
                     
                 
         logger.info(self.ids)

@@ -17,17 +17,17 @@ def lambda_handler(request, context):
 		
 		if not event.responseElements:
 			logger.warning('Not responseElements found')
-			if event.errorCode:
-				logger.error(f'errorCode: {str(event.errorCode)}')
-			if event.errorMessage:
-				logger.error(f'errorMessage: {str(event.errorMessage)}')
+			if event.errorcode:
+				logger.error(f'errorCode: {str(event.errorcode)}')
+			if event.errormessage:
+				logger.error(f'errorMessage: {str(event.errormessage)}')
 			return False
 		
 		if event.runinstance:
 			event.get_instsance_ids()
 			
 		if event.ids:
-			inst = InstanceTag(user=event.user, AppName=event.appName)
+			inst = InstanceTag(user=event.user, AppName=event.appname)
 			tags = inst.get_tags()
 			for resourceid in event.ids:
 				i = resourceid.split('-')
@@ -35,7 +35,7 @@ def lambda_handler(request, context):
 					print('Tagging resource ' + resourceid)
 					attachment = static_new_instance(tags=inst,instanceid=resourceid)
 					replay_card(attachment=attachment,email=event.user,msg='Card Error')
-					tag(resourceId=resourceid,region=event.region,tag=tags)
+					tag(resourceid=resourceid,region=event.region,tags=tags)
 		
 		logger.info(' Remaining time (ms): ' + str(
 			context.get_remaining_time_in_millis()) + '\n')
