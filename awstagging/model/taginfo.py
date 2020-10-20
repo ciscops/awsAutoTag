@@ -1,9 +1,9 @@
 class InstanceTag:
-    def __init__(self, user, appname, itemid):
+    def __init__(self, user,email, appname, itemid):
         self.dataclassification = "Cisco Restricted"
         self.environment = 'dev'
         self.resourceowner = user
-        self.ciscomailalias = user
+        self.ciscomailalias = email
         self.datataxonomy = 'Cisco Operations Data'
         self.appname = appname
         self.itemid = itemid

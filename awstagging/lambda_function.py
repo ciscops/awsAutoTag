@@ -21,11 +21,14 @@ def run_tagging(event):
             for resourceid in event.ids:
                 i = resourceid.split('-')
                 if i[0] == "i":
-                    tags = InstanceTag(user=event.user, appname=event.appname, itemid=resourceid)
+                    tags = InstanceTag(user=event.user,
+                                       email=event.email,
+                                       appname=event.appname,
+                                       itemid=resourceid)
 
                     print('Tagging resource %s', resourceid)
                     attachment = template_card("tagcard.json", tags)
-                    replay_card(attachment=attachment, email=event.user)
+                    replay_card(attachment=attachment, email=event.email)
                     tag(tags=tags, region=event.region)
         return True
     except Exception as e:
@@ -61,7 +64,8 @@ def lambda_handler(request, context):
         else:
             run_tagging(event)
 
-        logger.info(' Remaining time (ms): %s', str(context.get_remaining_time_in_millis()) + '\n')
+        logger.info(' Remaining time (ms): %s',
+                    str(context.get_remaining_time_in_millis()) + '\n')
         return True
     except Exception as e:
         logger.error('Something went wrong: %s', str(e))
