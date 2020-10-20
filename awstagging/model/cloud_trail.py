@@ -3,18 +3,19 @@ import boto3
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 class Event:
     """
     Data model class to hold event data
     Used to parse once so the  main handler can call as needed
     """
-    def __init__(self,event):
+    def __init__(self, event):
         """
            :param event: event json sent to the lambda function
         """
         self.region = event['region']
         _detail = event['detail']
-        logger.info('request detail: ' + str(_detail))
+        logger.info('request detail: %s', str(_detail))
         self.eventname = _detail['eventName']
         self.arn = _detail['userIdentity']['arn']
         self.principal = _detail['userIdentity']['principalId']
@@ -31,10 +32,11 @@ class Event:
         self.createvolumes = False
         self.createimage = False
         self.createsnapshot = False
-        
+
         if self.eventname == 'RunInstances':
             self.runinstance = True
-            self.instanceids = _detail['responseElements']['instancesSet']['items']
+            self.instanceids = _detail['responseElements']['instancesSet'][
+                'items']
         elif self.eventname == 'CreateVolume':
             self.createvolumes = True
             self.volumeids = _detail['responseElements']['volumeId']
@@ -45,12 +47,12 @@ class Event:
             self.createsnapshot = True
             self.snapshotids = _detail['responseElements']['snapshotId']
         self.ids = []
-        
+
     def get_volume_ids(self):
         if self.createvolumes:
-           self.ids.append(self.volumeids)
-           logger.info(self.ids)
-    
+            self.ids.append(self.volumeids)
+            logger.info(self.ids)
+
     def get_instsance_ids(self):
         ec2 = boto3.resource('ec2', region_name=self.region)
         items = self.instanceids
@@ -60,10 +62,9 @@ class Event:
                 for tag in item['tagSet']['items']:
                     if tag['key'] == "Name":
                         self.appname = tag['value']
-                    
-                
+
         logger.info(self.ids)
-        logger.info('number of instances: ' + str(len(self.ids)))
+        logger.info('number of instances: %s', str(len(self.ids)))
 
         base = ec2.instances.filter(InstanceIds=self.ids)
         # loop through the instances
@@ -72,13 +73,11 @@ class Event:
                 self.ids.append(vol.id)
             for eni in instance.network_interfaces:
                 self.ids.append(eni.id)
-    
+
     def get_image_ids(self):
         self.ids.append(self.instanceids)
         logger.info(self.ids)
-        
+
     def get_snap_shot_ids(self):
         self.ids.append(self.snapshotids)
         logger.info(self.ids)
-    
-    

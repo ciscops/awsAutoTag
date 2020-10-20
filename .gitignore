@@ -156,3 +156,7 @@ cython_debug/
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
+/test.json
+.idea/codeStyles/
+.idea/pylint.xml
+/samltest.py
