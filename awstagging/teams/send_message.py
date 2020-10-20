@@ -30,9 +30,7 @@ def send_all(msg):
 
 def replay_card(attachment, email):
     try:
-        teams_api.messages.create(toPersonEmail=email,
-                                  attachments=[attachment],text="Test")
+        teams_api.messages.create(toPersonEmail=email, attachments=[attachment], text="Test")
         return True
     except webexteamssdkException as e:
         logger.info("Message Failed for going to teams: %s", str(e))
-        

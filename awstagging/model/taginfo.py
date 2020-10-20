@@ -1,5 +1,5 @@
 class InstanceTag:
-    def __init__(self, user, appname,itemid):
+    def __init__(self, user, appname, itemid):
         self.dataclassification = "Cisco Restricted"
         self.environment = 'dev'
         self.resourceowner = user
@@ -28,7 +28,7 @@ class InstanceTag:
         }, {
             'Key': 'Application Name',
             'Value': str(self.appname)
-        },{
+        }, {
             'Key': 'Validated',
             'Value': self.approved
         }]

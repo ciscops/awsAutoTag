@@ -21,9 +21,7 @@ def run_tagging(event):
             for resourceid in event.ids:
                 i = resourceid.split('-')
                 if i[0] == "i":
-                    tags = InstanceTag(user=event.user,
-                                       appname=event.appname,
-                                       itemid=resourceid)
+                    tags = InstanceTag(user=event.user, appname=event.appname, itemid=resourceid)
 
                     print('Tagging resource %s', resourceid)
                     attachment = template_card("tagcard.json", tags)
@@ -55,16 +53,15 @@ def lambda_handler(request, context):
 
         if getenv("DEV"):
             #Check Environment for DEV and if running in DEV will only run function for users in the DEV_USER enviromnet variable
-            dev_users = getenv('DEV_USERS')
+            dev_users = [getenv('DEV_USERS')]
             for user in dev_users:
-                if event.user == user:
+                if event.user.upper() == user.upper():
                     run_tagging(event)
 
         else:
             run_tagging(event)
 
-        logger.info(' Remaining time (ms): %s',
-                    str(context.get_remaining_time_in_millis()) + '\n')
+        logger.info(' Remaining time (ms): %s', str(context.get_remaining_time_in_millis()) + '\n')
         return True
     except Exception as e:
         logger.error('Something went wrong: %s', str(e))

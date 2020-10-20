@@ -35,8 +35,7 @@ class Event:
 
         if self.eventname == 'RunInstances':
             self.runinstance = True
-            self.instanceids = _detail['responseElements']['instancesSet'][
-                'items']
+            self.instanceids = _detail['responseElements']['instancesSet']['items']
         elif self.eventname == 'CreateVolume':
             self.createvolumes = True
             self.volumeids = _detail['responseElements']['volumeId']
@@ -55,6 +54,7 @@ class Event:
 
     def get_instsance_ids(self):
         ec2 = boto3.resource('ec2', region_name=self.region)
+        
         items = self.instanceids
         for item in items:
             self.ids.append(item['instanceId'])
@@ -66,13 +66,6 @@ class Event:
         logger.info(self.ids)
         logger.info('number of instances: %s', str(len(self.ids)))
 
-        base = ec2.instances.filter(InstanceIds=self.ids)
-        # loop through the instances
-        for instance in base:
-            for vol in instance.volumes.all():
-                self.ids.append(vol.id)
-            for eni in instance.network_interfaces:
-                self.ids.append(eni.id)
 
     def get_image_ids(self):
         self.ids.append(self.instanceids)
