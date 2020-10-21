@@ -1,5 +1,5 @@
 import json
-from jinja2 import Environment, PackageLoader
+from .templates.tagcard import build_card
 from pyadaptivecards.components import TextBlock, Fact, Column, Choice
 from pyadaptivecards.card import AdaptiveCard
 from pyadaptivecards.inputs import Text, Choices
@@ -111,11 +111,15 @@ def static_new_instance(tags, instanceid):
 
 
 def template_card(file, data):
-    _env = Environment(loader=PackageLoader('teams', 'templates'))
-    _env.filters['jsonify'] = json.dumps
+    #_env = Environment(loader=PackageLoader('teams', 'templates'))
+    #_env.filters['jsonify'] = json.dumps
 
     #Templte file ./teams/templates/<template>
-    template = _env.get_template(file)
-    attachment = template.render(data=data)
+    #template = _env.get_template(file)
+    CARD_CONTENT = build_card(data)
+    attachments = [{
+            "contentType": "application/vnd.microsoft.card.adaptive",
+            "content"    : CARD_CONTENT
+    }]
 
-    return json.loads(attachment)
+    return attachments

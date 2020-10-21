@@ -2,7 +2,7 @@ import logging
 import boto3
 from os import getenv
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 class Event:
@@ -26,7 +26,7 @@ class Event:
             self.errormessage = _detail['errorMessage']
         if _detail['userIdentity']['type'] == 'IAMUser':
             self.user = _detail['userIdentity']['userName']
-            self.email = f"self.user {getenv('DEFAULT_EMAIL_DOMAIN')}"
+            self.email = f"{self.user}@{getenv('DEFAULT_EMAIL_DOMAIN')}"
         else:
             self.user = self.principal.split(':')[1]
             self.email = self.user

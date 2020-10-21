@@ -17,7 +17,7 @@ class InstanceTag:
             'Key': 'Environment',
             'Value': str(self.environment)
         }, {
-            'Key': 'Resource Owner',
+            'Key': 'ResourceOwner',
             'Value': str(self.resourceowner)
         }, {
             'Key': 'Cisco Mail Alias',

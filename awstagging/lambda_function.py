@@ -7,7 +7,7 @@ from teams.create_card import template_card
 from teams.send_message import replay_card
 from os import getenv
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 
 def run_tagging(event):
@@ -26,13 +26,15 @@ def run_tagging(event):
                                        appname=event.appname,
                                        itemid=resourceid)
 
-                    print('Tagging resource %s', resourceid)
-                    attachment = template_card("tagcard.json", tags)
-                    replay_card(attachment=attachment, email=event.email)
+                    print(f'Tagging resource {resourceid}')
                     tag(tags=tags, region=event.region)
+                    attachment = template_card("tagcard.json", tags)
+                    logger.debug(str(attachment))
+                    replay_card(attachment=attachment, email=event.email)
+                   
         return True
     except Exception as e:
-        logger.error('Something went wrong: %s', str(e))
+        logger.debug('Something went wrong: %s', str(e))
         return False
 
 
