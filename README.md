@@ -21,7 +21,7 @@ a new EC2 insances is ran.  AWS Event Bridge looks for patters in the Cloud Trai
 - `Validated: False` Once the end user approves the tags via webex team this will become true <br />
 - `Leave Running: False` If the end user changes Leave Running to True the EC2 Instance will not shutdown at night<br />
  
-## #Event Bridge Rule<br />
+## Event Bridge Rule<br />
 
 `{
   "source": [
