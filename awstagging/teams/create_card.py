@@ -1,4 +1,3 @@
-import json
 from .templates.tagcard import build_card
 from pyadaptivecards.components import TextBlock, Fact, Column, Choice
 from pyadaptivecards.card import AdaptiveCard
