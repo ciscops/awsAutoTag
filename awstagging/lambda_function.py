@@ -58,7 +58,8 @@ def lambda_handler(request, context):
 
         if getenv("DEV"):
             #Check Environment for DEV and if running in DEV will only run function for users in the DEV_USER enviromnet variable
-            dev_users = [getenv('DEV_USERS')]
+            dev_users = getenv('DEV_USERS')
+            dev_users = dev_users.split(',')
             for user in dev_users:
                 if event.user.upper() == user.upper():
                     run_tagging(event)

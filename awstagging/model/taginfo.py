@@ -7,7 +7,8 @@ class InstanceTag:
         self.datataxonomy = 'Cisco Operations Data'
         self.appname = appname
         self.itemid = itemid
-        self.approved = "False"
+        self.approved = 'False',
+        self.leaverunning = 'False'
 
     def get_tags(self):
         tags = [{
@@ -30,7 +31,10 @@ class InstanceTag:
             'Value': str(self.appname)
         }, {
             'Key': 'Validated',
-            'Value': self.approved
+            'Value': str(self.approved)
+        },{
+            'Key': 'Leave Running',
+            'Value': str(self.leaverunning)
         }]
 
         return tags

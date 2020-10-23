@@ -56,15 +56,14 @@ class Event:
             logger.info(self.ids)
 
     def get_instsance_ids(self):
-        ec2 = boto3.resource('ec2', region_name=self.region)
         
-        items = self.instanceids
-        for item in items:
+        for item in self.instanceids:
             self.ids.append(item['instanceId'])
             if "tagSet" in item.keys():
                 for tag in item['tagSet']['items']:
-                    if tag['key'] == "Name":
+                    if tag['key'].upper() == "NAME":
                         self.appname = tag['value']
+                        logger.info('Instance Name: %s', self.appname)
 
         logger.info(self.ids)
         logger.info('number of instances: %s', str(len(self.ids)))

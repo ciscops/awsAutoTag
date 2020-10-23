@@ -29,9 +29,9 @@ def build_card(data):
                     "horizontalAlignment": "Left",
                     "size": "Small"
                 }, {
-                    "type": "Input.Text",
-                    "placeholder": data.appname,
                     "id": "appname",
+                    "type": "Input.Text",
+                    "value": data.appname,
                     "spacing": "None"
                 }, {
                     "type": "TextBlock",
@@ -90,6 +90,12 @@ def build_card(data):
                     }, {
                         "title": "Cisco Highly Confidentia",
                         "value": "Cisco Highly Confidentia"
+                    }, {
+                        "title": "Cisco Confidential",
+                        "value": "Cisco Confidential"
+                    }, {
+                        "title": "Cisco Public",
+                        "value": "Cisco Public"
                     }],
                     "id":
                     "dataclassification",
@@ -104,8 +110,32 @@ def build_card(data):
                     "horizontalAlignment": "Left"
                 }, {
                     "choices": [{
+                        "title": "Administrative Data",
+                        "value": "Administrative Data"
+                    }, {
+                        "title": "Customer Data",
+                        "value": "Customer Data"
+                    }, {
+                        "title": "Entrusted Data",
+                        "value": "Entrusted Data"
+                    }, {
+                        "title": "Financing Data",
+                        "value": "Financing Data"
+                    }, {
+                        "title": "Support Data",
+                        "value": "Support Data"
+                    }, {
+                        "title": "Telemetry Data",
+                        "value": "Telemetry Data"
+                    }, {
                         "title": "Cisco Operations Data",
                         "value": "Cisco Operations Data"
+                    }, {
+                        "title": "Cisco Strategic Data",
+                        "value": "Cisco Strategic Data"
+                    }, {
+                        "title": "Human Resources Data",
+                        "value": "Human Resources Data"
                     }],
                     "id":
                     "datataxonomy",
@@ -114,14 +144,19 @@ def build_card(data):
                     "value":
                     data.datataxonomy
                 }, {
+                    "id": "leaverunning",
+                    "type": "Input.Toggle",
+                    "title": "Leave Running",
+                    "value": "false",
+                    "wrap": True
+                }, {
                     "type":
                     "ActionSet",
                     "actions": [{
                         "type": "Action.Submit",
                         "title": "Approve"
                     }],
-                    "horizontalAlignment":
-                    "Center"
+                    "horizontalAlignment": "Center"
                 }, {
                     "type": "TextBlock",
                     "text":
@@ -133,7 +168,11 @@ def build_card(data):
                 }]
             }],
             "selectAction": {
-                "type": "Action.Submit"
+                "type": "Action.Submit",
+                "data": {
+                    "itemid": data.itemid,
+                    "approved": "True"
+                }
             }
         }]
     }
