@@ -1,4 +1,4 @@
-#**AWS Tagging**
+# AWS Tagging
 AWS Tagging is a Lambda function within AWS, this function is used to keep EC2 instaces in compliance with Cisco
  Security Tagging Requirements
  the function will trigger everytime 
@@ -10,7 +10,7 @@ a new EC2 insances is ran.  AWS Event Bridge looks for patters in the Cloud Trai
   
 
   
-###Default Tags
+### Default Tags
  
 - `Data Classification: Cisco Restricted` <br />
 - `Environment: dev` <br />
@@ -21,7 +21,7 @@ a new EC2 insances is ran.  AWS Event Bridge looks for patters in the Cloud Trai
 - `Validated: False` Once the end user approves the tags via webex team this will become true <br />
 - `Leave Running: False` If the end user changes Leave Running to True the EC2 Instance will not shutdown at night<br />
  
-###Event Bridge Rule<br />
+## #Event Bridge Rule<br />
 
 `{
   "source": [
@@ -38,7 +38,7 @@ a new EC2 insances is ran.  AWS Event Bridge looks for patters in the Cloud Trai
 }`
 <br />
 
-###Lambda Required Permissions <br /> 
+### Lambda Required Permissions <br /> 
 `{
     "Version": "2012-10-17",
     "Statement": [
@@ -54,7 +54,7 @@ a new EC2 insances is ran.  AWS Event Bridge looks for patters in the Cloud Trai
     ]
 }`
 
-###Envernment Variables <br />
+### Envernment Variables <br />
 - `DEFAULT_EMAIL_DOMAIN` <br />
 -  `DEV <True/False>` False puts the function into production mode where it will by pass the DEV_USERS list <br />
 - `DEV_USERS` List of user that the function will apply on after triggered by event bridge <br />
